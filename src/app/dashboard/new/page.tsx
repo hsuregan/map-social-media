@@ -7,6 +7,9 @@ import { EntryType } from "@/lib/types";
 import TextEntryForm from "@/components/TextEntryForm";
 import AudioRecorder from "@/components/AudioRecorder";
 import MediaUploader from "@/components/MediaUploader";
+import CameraCapture from "@/components/CameraCapture";
+
+type MediaSource = "upload" | "camera";
 
 const entryTypes: { value: EntryType; label: string }[] = [
   { value: "text", label: "Text" },
@@ -19,6 +22,7 @@ export default function NewEntryPage() {
   const [title, setTitle] = useState("");
   const [entryType, setEntryType] = useState<EntryType>("text");
   const [textContent, setTextContent] = useState("");
+  const [mediaSource, setMediaSource] = useState<MediaSource>("upload");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
@@ -26,12 +30,14 @@ export default function NewEntryPage() {
 
   const audioBlobRef = useRef<{ blob: Blob; mimeType: string } | null>(null);
   const mediaFileRef = useRef<File | null>(null);
+  const cameraBlobRef = useRef<{ blob: Blob; mimeType: string } | null>(null);
 
   const getFileExtension = (mimeType: string): string => {
+    // Strip codec parameters (e.g. "video/webm;codecs=vp9,opus" -> "video/webm")
+    const baseMime = mimeType.split(";")[0].trim();
     const map: Record<string, string> = {
-      "audio/webm;codecs=opus": "webm",
       "audio/webm": "webm",
-      "audio/ogg;codecs=opus": "ogg",
+      "audio/ogg": "ogg",
       "audio/mp4": "m4a",
       "image/jpeg": "jpg",
       "image/png": "png",
@@ -41,7 +47,7 @@ export default function NewEntryPage() {
       "video/webm": "webm",
       "video/quicktime": "mov",
     };
-    return map[mimeType] || mimeType.split("/")[1] || "bin";
+    return map[baseMime] || baseMime.split("/")[1] || "bin";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,9 +71,10 @@ export default function NewEntryPage() {
 
     if (
       (entryType === "picture" || entryType === "video") &&
-      !mediaFileRef.current
+      !mediaFileRef.current &&
+      !cameraBlobRef.current
     ) {
-      setError("Please select a file before saving.");
+      setError("Please select a file or capture from camera before saving.");
       return;
     }
 
@@ -103,6 +110,21 @@ export default function NewEntryPage() {
         const { error: uploadError } = await supabase.storage
           .from("journal-media")
           .upload(path, file, { contentType: file.type });
+        if (uploadError) throw uploadError;
+        mediaUrl = path;
+      }
+
+      if (
+        (entryType === "picture" || entryType === "video") &&
+        !mediaFileRef.current &&
+        cameraBlobRef.current
+      ) {
+        const { blob, mimeType } = cameraBlobRef.current;
+        const ext = getFileExtension(mimeType);
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from("journal-media")
+          .upload(path, blob, { contentType: mimeType });
         if (uploadError) throw uploadError;
         mediaUrl = path;
       }
@@ -200,24 +222,66 @@ export default function NewEntryPage() {
           />
         )}
 
-        {entryType === "picture" && (
-          <MediaUploader
-            accept="image/*"
-            mediaType="picture"
-            onFileSelected={(file) => {
-              mediaFileRef.current = file;
-            }}
-          />
-        )}
+        {(entryType === "picture" || entryType === "video") && (
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setMediaSource("upload");
+                  cameraBlobRef.current = null;
+                }}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  mediaSource === "upload"
+                    ? "bg-gray-800 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Upload File
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMediaSource("camera");
+                  mediaFileRef.current = null;
+                }}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  mediaSource === "camera"
+                    ? "bg-gray-800 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Use Camera
+              </button>
+            </div>
 
-        {entryType === "video" && (
-          <MediaUploader
-            accept="video/*"
-            mediaType="video"
-            onFileSelected={(file) => {
-              mediaFileRef.current = file;
-            }}
-          />
+            {mediaSource === "upload" && entryType === "picture" && (
+              <MediaUploader
+                accept="image/*"
+                mediaType="picture"
+                onFileSelected={(file) => {
+                  mediaFileRef.current = file;
+                }}
+              />
+            )}
+            {mediaSource === "upload" && entryType === "video" && (
+              <MediaUploader
+                accept="video/*"
+                mediaType="video"
+                onFileSelected={(file) => {
+                  mediaFileRef.current = file;
+                }}
+              />
+            )}
+            {mediaSource === "camera" && (
+              <CameraCapture
+                mode={entryType}
+                onCaptured={(blob, mimeType) => {
+                  cameraBlobRef.current = { blob, mimeType };
+                }}
+              />
+            )}
+          </div>
         )}
 
         <div className="flex gap-3">
