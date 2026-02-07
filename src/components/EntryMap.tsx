@@ -44,13 +44,32 @@ function FitBounds({ entries }: { entries: JournalEntry[] }) {
     const bounds = L.latLngBounds(
       entries.map((e) => [e.latitude!, e.longitude!] as [number, number])
     );
-    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 });
   }, [entries, map]);
 
   return null;
 }
 
-function DrawCircleSelector({
+// Ray-casting algorithm: returns true if point (lat, lng) is inside polygon
+function pointInPolygon(
+  lat: number,
+  lng: number,
+  polygon: L.LatLng[]
+): boolean {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const yi = polygon[i].lat,
+      xi = polygon[i].lng;
+    const yj = polygon[j].lat,
+      xj = polygon[j].lng;
+    const intersect =
+      yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function DrawLassoSelector({
   entries,
   onSelect,
 }: {
@@ -59,26 +78,27 @@ function DrawCircleSelector({
 }) {
   const map = useMap();
   const [drawMode, setDrawMode] = useState(false);
-  const circleRef = useRef<L.Circle | null>(null);
-  const centerRef = useRef<L.LatLng | null>(null);
+  const polygonRef = useRef<L.Polygon | null>(null);
+  const pointsRef = useRef<L.LatLng[]>([]);
   const drawingRef = useRef(false);
 
-  const clearCircle = useCallback(() => {
-    if (circleRef.current) {
-      circleRef.current.remove();
-      circleRef.current = null;
+  const clearShape = useCallback(() => {
+    if (polygonRef.current) {
+      polygonRef.current.remove();
+      polygonRef.current = null;
     }
+    pointsRef.current = [];
   }, []);
 
   const toggleDrawMode = useCallback(() => {
     setDrawMode((prev) => {
       const next = !prev;
       if (!next) {
-        clearCircle();
+        clearShape();
       }
       return next;
     });
-  }, [clearCircle]);
+  }, [clearShape]);
 
   useEffect(() => {
     const container = map.getContainer();
@@ -93,13 +113,12 @@ function DrawCircleSelector({
     if (!drawMode) return;
 
     const onMouseDown = (e: L.LeafletMouseEvent) => {
-      clearCircle();
-      centerRef.current = e.latlng;
+      clearShape();
+      pointsRef.current = [e.latlng];
       drawingRef.current = true;
       map.dragging.disable();
 
-      circleRef.current = L.circle(e.latlng, {
-        radius: 0,
+      polygonRef.current = L.polygon([e.latlng], {
         color: "#3b82f6",
         fillColor: "#3b82f6",
         fillOpacity: 0.15,
@@ -108,29 +127,28 @@ function DrawCircleSelector({
     };
 
     const onMouseMove = (e: L.LeafletMouseEvent) => {
-      if (!drawingRef.current || !centerRef.current || !circleRef.current)
-        return;
-      const radius = centerRef.current.distanceTo(e.latlng);
-      circleRef.current.setRadius(radius);
+      if (!drawingRef.current || !polygonRef.current) return;
+      pointsRef.current.push(e.latlng);
+      polygonRef.current.setLatLngs(pointsRef.current);
     };
 
     const onMouseUp = () => {
-      if (!drawingRef.current || !circleRef.current) return;
+      if (!drawingRef.current || !polygonRef.current) return;
       drawingRef.current = false;
       map.dragging.enable();
 
-      const circleCenter = circleRef.current.getLatLng();
-      const circleRadius = circleRef.current.getRadius();
-
-      if (circleRadius < 10) {
-        clearCircle();
+      const points = pointsRef.current;
+      if (points.length < 3) {
+        clearShape();
         return;
       }
 
+      // Close the polygon visually
+      polygonRef.current.setLatLngs(points);
+
       const inside = entries.filter((entry) => {
         if (entry.latitude == null || entry.longitude == null) return false;
-        const entryLatLng = L.latLng(entry.latitude, entry.longitude);
-        return circleCenter.distanceTo(entryLatLng) <= circleRadius;
+        return pointInPolygon(entry.latitude, entry.longitude, points);
       });
 
       setDrawMode(false);
@@ -139,7 +157,7 @@ function DrawCircleSelector({
       if (inside.length > 0) {
         onSelect(inside);
       } else {
-        clearCircle();
+        clearShape();
       }
     };
 
@@ -152,15 +170,15 @@ function DrawCircleSelector({
       map.off("mousemove", onMouseMove);
       map.off("mouseup", onMouseUp);
     };
-  }, [drawMode, entries, map, onSelect, clearCircle]);
+  }, [drawMode, entries, map, onSelect, clearShape]);
 
-  // Expose clearCircle to parent via a custom event pattern
+  // Expose clearShape to parent via a custom event
   useEffect(() => {
     const container = map.getContainer();
-    const handler = () => clearCircle();
-    container.addEventListener("clear-circle", handler);
-    return () => container.removeEventListener("clear-circle", handler);
-  }, [map, clearCircle]);
+    const handler = () => clearShape();
+    container.addEventListener("clear-shape", handler);
+    return () => container.removeEventListener("clear-shape", handler);
+  }, [map, clearShape]);
 
   return (
     <div
@@ -341,7 +359,7 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
   const handleClose = useCallback(() => {
     setSelectedEntries([]);
     if (mapRef.current) {
-      mapRef.current.getContainer().dispatchEvent(new Event("clear-circle"));
+      mapRef.current.getContainer().dispatchEvent(new Event("clear-shape"));
     }
   }, []);
 
@@ -358,7 +376,7 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <FitBounds entries={entries} />
-        <DrawCircleSelector entries={entries} onSelect={setSelectedEntries} />
+        <DrawLassoSelector entries={entries} onSelect={setSelectedEntries} />
         {entries.map((entry) => (
           <Marker
             key={entry.id}
