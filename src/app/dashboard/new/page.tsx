@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { EntryType } from "@/lib/types";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import TextEntryForm from "@/components/TextEntryForm";
 import AudioRecorder from "@/components/AudioRecorder";
 import MediaUploader from "@/components/MediaUploader";
@@ -24,9 +25,11 @@ export default function NewEntryPage() {
   const [textContent, setTextContent] = useState("");
   const [mediaSource, setMediaSource] = useState<MediaSource>("upload");
   const [error, setError] = useState<string | null>(null);
+  const [isPublic, setIsPublic] = useState(false);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const geo = useGeolocation();
 
   const audioBlobRef = useRef<{ blob: Blob; mimeType: string } | null>(null);
   const mediaFileRef = useRef<File | null>(null);
@@ -138,6 +141,9 @@ export default function NewEntryPage() {
           entry_type: entryType,
           text_content: entryType === "text" ? textContent : null,
           media_url: mediaUrl,
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+          public: isPublic,
         });
 
       if (insertError) {
@@ -208,6 +214,18 @@ export default function NewEntryPage() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="text-sm text-gray-500">
+          {geo.loading ? (
+            <span>Detecting location...</span>
+          ) : geo.latitude !== null && geo.longitude !== null ? (
+            <span className="text-green-600">
+              Location captured ({geo.latitude.toFixed(4)}, {geo.longitude.toFixed(4)})
+            </span>
+          ) : (
+            <span>No location available</span>
+          )}
         </div>
 
         {entryType === "text" && (
@@ -283,6 +301,19 @@ export default function NewEntryPage() {
             )}
           </div>
         )}
+
+        <div className="flex items-center gap-2">
+          <input
+            id="public"
+            type="checkbox"
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <label htmlFor="public" className="text-sm text-gray-700">
+            Make this entry public
+          </label>
+        </div>
 
         <div className="flex gap-3">
           <button
