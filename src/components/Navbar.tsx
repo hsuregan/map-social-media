@@ -1,40 +1,23 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
 
-export default function Navbar() {
-  const supabase = createClient();
-  const router = useRouter();
-  const [username, setUsername] = useState<string | null>(null);
+export default async function Navbar() {
+  const supabase = await createClient();
 
-  useEffect(() => {
-    async function loadUsername() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", user.id)
-        .single();
-
-      if (profile) {
-        setUsername(profile.username);
-      }
-    }
-    loadUsername();
-  }, [supabase]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/auth/login");
-    router.refresh();
-  };
+  let username: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+    username = profile?.username ?? null;
+  }
 
   return (
     <nav className="border-b border-gray-200 bg-white">
@@ -67,12 +50,7 @@ export default function Navbar() {
           >
             New Entry
           </Link>
-          <button
-            onClick={handleLogout}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Log Out
-          </button>
+          <LogoutButton />
         </div>
       </div>
     </nav>

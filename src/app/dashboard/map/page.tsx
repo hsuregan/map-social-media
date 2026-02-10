@@ -11,7 +11,7 @@ export default async function MapPage() {
 
   const { data: entries } = await supabase
     .from("journal_entries")
-    .select("*")
+    .select("id, user_id, title, entry_type, text_content, latitude, longitude, public, created_at")
     .or(`user_id.eq.${user!.id},public.eq.true`)
     .not("latitude", "is", null)
     .not("longitude", "is", null)

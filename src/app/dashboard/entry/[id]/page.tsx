@@ -12,35 +12,36 @@ export default async function EntryDetailPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: entry } = await supabase
-    .from("journal_entries")
-    .select("*")
-    .eq("id", id)
-    .single<JournalEntry>();
+  // Fetch entry and user in parallel
+  const [{ data: entry }, { data: { user } }] = await Promise.all([
+    supabase
+      .from("journal_entries")
+      .select("*")
+      .eq("id", id)
+      .single<JournalEntry>(),
+    supabase.auth.getUser(),
+  ]);
 
   if (!entry) {
     notFound();
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
   const isOwner = user?.id === entry.user_id;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", entry.user_id)
-    .single<Profile>();
-
-  // Generate signed URL for private media
-  let signedUrl: string | null = null;
-  if (entry.media_url) {
-    const { data } = await supabase.storage
-      .from("journal-media")
-      .createSignedUrl(entry.media_url, 3600);
-    signedUrl = data?.signedUrl ?? null;
-  }
+  // Fetch profile and signed URL in parallel
+  const [{ data: profile }, signedUrl] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", entry.user_id)
+      .single<Pick<Profile, "username">>(),
+    entry.media_url
+      ? supabase.storage
+          .from("journal-media")
+          .createSignedUrl(entry.media_url, 3600)
+          .then(({ data }) => data?.signedUrl ?? null)
+      : Promise.resolve(null),
+  ]);
 
   const date = new Date(entry.created_at).toLocaleDateString("en-US", {
     weekday: "long",

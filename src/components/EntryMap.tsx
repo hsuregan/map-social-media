@@ -1,25 +1,35 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, memo } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { JournalEntry } from "@/lib/types";
 import Link from "next/link";
 
+// Inline SVG marker icons to eliminate external CDN requests
+function markerSvg(fill: string): string {
+  return `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41"><path d="M12.5 0C5.6 0 0 5.6 0 12.5c0 2.4.7 4.7 1.9 6.6L12.5 41l10.6-21.9c1.2-1.9 1.9-4.2 1.9-6.6C25 5.6 19.4 0 12.5 0z" fill="${fill}" stroke="#fff" stroke-width="1"/><circle cx="12.5" cy="12.5" r="5" fill="#fff"/></svg>`
+  )}`;
+}
+
+const shadowSvg = `data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="41" viewBox="0 0 41 41"><ellipse cx="13" cy="38" rx="13" ry="3" fill="rgba(0,0,0,0.2)"/></svg>`
+)}`;
+
 // Fix Leaflet default marker icon paths (known bundler issue)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: markerSvg("#2563eb"),
+  iconRetinaUrl: markerSvg("#2563eb"),
+  shadowUrl: shadowSvg,
 });
 
 const blueIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: markerSvg("#2563eb"),
+  shadowUrl: shadowSvg,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -27,8 +37,8 @@ const blueIcon = new L.Icon({
 });
 
 const redIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: markerSvg("#dc2626"),
+  shadowUrl: shadowSvg,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -216,6 +226,18 @@ function EntrySelectionModal({
   entries: JournalEntry[];
   onClose: () => void;
 }) {
+  const [viewingEntry, setViewingEntry] = useState<JournalEntry | null>(null);
+
+  const date = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
   return (
     <div
       style={{
@@ -240,112 +262,273 @@ function EntrySelectionModal({
           boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 16,
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>
-            {entries.length} {entries.length === 1 ? "Entry" : "Entries"} in
-            Selection
-          </h3>
-          <button
-            onClick={onClose}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 22,
-              cursor: "pointer",
-              color: "#666",
-              lineHeight: 1,
-              padding: "0 4px",
-            }}
-          >
-            &times;
-          </button>
-        </div>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-          {entries.map((entry) => (
-            <li
-              key={entry.id}
+        {viewingEntry ? (
+          /* ── Entry detail view ── */
+          <>
+            <button
+              onClick={() => setViewingEntry(null)}
               style={{
-                padding: "10px 0",
-                borderBottom: "1px solid #eee",
+                background: "none",
+                border: "none",
+                color: "#3b82f6",
+                cursor: "pointer",
+                fontSize: 14,
+                padding: 0,
+                marginBottom: 12,
               }}
             >
-              <p
+              &larr; Back to list
+            </button>
+
+            <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>
+              {viewingEntry.title}
+            </h3>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#666" }}>
+              {date(viewingEntry.created_at)}
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                marginTop: 8,
+              }}
+            >
+              <span
                 style={{
-                  margin: 0,
-                  fontWeight: 600,
-                  fontSize: 15,
+                  background: "#e0e7ff",
+                  color: "#3730a3",
+                  padding: "1px 8px",
+                  borderRadius: 9999,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  textTransform: "capitalize",
                 }}
               >
-                {entry.title}
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginTop: 4,
-                  fontSize: 13,
-                }}
-              >
+                {viewingEntry.entry_type}
+              </span>
+              {viewingEntry.public && (
                 <span
                   style={{
-                    background: "#e0e7ff",
-                    color: "#3730a3",
+                    background: "#dcfce7",
+                    color: "#15803d",
                     padding: "1px 8px",
                     borderRadius: 9999,
                     fontSize: 12,
                     fontWeight: 500,
-                    textTransform: "capitalize",
                   }}
                 >
-                  {entry.entry_type}
+                  Public
                 </span>
-                <span style={{ color: "#888" }}>
-                  {new Date(entry.created_at).toLocaleDateString()}
-                </span>
-              </div>
-              <Link
-                href={`/dashboard/entry/${entry.id}`}
+              )}
+            </div>
+
+            {viewingEntry.latitude != null && viewingEntry.longitude != null && (
+              <p style={{ fontSize: 13, color: "#666", marginTop: 12 }}>
+                <a
+                  href={`https://www.openstreetmap.org/?mlat=${viewingEntry.latitude}&mlon=${viewingEntry.longitude}#map=15/${viewingEntry.latitude}/${viewingEntry.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#3b82f6", textDecoration: "none" }}
+                >
+                  {viewingEntry.latitude.toFixed(4)},{" "}
+                  {viewingEntry.longitude.toFixed(4)}
+                </a>
+              </p>
+            )}
+
+            {viewingEntry.entry_type === "text" && viewingEntry.text_content && (
+              <p
                 style={{
-                  color: "#3b82f6",
-                  fontSize: 13,
-                  marginTop: 4,
-                  display: "inline-block",
-                  textDecoration: "none",
+                  marginTop: 16,
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: "#1f2937",
+                  whiteSpace: "pre-wrap",
                 }}
               >
-                View entry &rarr;
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <button
-          onClick={onClose}
-          style={{
-            marginTop: 16,
-            width: "100%",
-            padding: "8px 0",
-            background: "#f3f4f6",
-            border: "1px solid #d1d5db",
-            borderRadius: 6,
-            cursor: "pointer",
-            fontSize: 14,
-            fontWeight: 500,
-          }}
-        >
-          Close
-        </button>
+                {viewingEntry.text_content}
+              </p>
+            )}
+
+            {viewingEntry.entry_type !== "text" && (
+              <p style={{ marginTop: 16, fontSize: 13, color: "#666" }}>
+                This entry contains {viewingEntry.entry_type} media.{" "}
+                <Link
+                  href={`/dashboard/entry/${viewingEntry.id}`}
+                  style={{ color: "#3b82f6", textDecoration: "none" }}
+                >
+                  Open full entry &rarr;
+                </Link>
+              </p>
+            )}
+
+            <button
+              onClick={onClose}
+              style={{
+                marginTop: 20,
+                width: "100%",
+                padding: "8px 0",
+                background: "#f3f4f6",
+                border: "1px solid #d1d5db",
+                borderRadius: 6,
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              Close
+            </button>
+          </>
+        ) : (
+          /* ── Entry list view ── */
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 16,
+              }}
+            >
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>
+                {entries.length}{" "}
+                {entries.length === 1 ? "Entry" : "Entries"} in Selection
+              </h3>
+              <button
+                onClick={onClose}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: 22,
+                  cursor: "pointer",
+                  color: "#666",
+                  lineHeight: 1,
+                  padding: "0 4px",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {entries.map((entry) => (
+                <li
+                  key={entry.id}
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid #eee",
+                  }}
+                >
+                  <p
+                    style={{
+                      margin: 0,
+                      fontWeight: 600,
+                      fontSize: 15,
+                    }}
+                  >
+                    {entry.title}
+                  </p>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginTop: 4,
+                      fontSize: 13,
+                    }}
+                  >
+                    <span
+                      style={{
+                        background: "#e0e7ff",
+                        color: "#3730a3",
+                        padding: "1px 8px",
+                        borderRadius: 9999,
+                        fontSize: 12,
+                        fontWeight: 500,
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {entry.entry_type}
+                    </span>
+                    <span style={{ color: "#888" }}>
+                      {new Date(entry.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setViewingEntry(entry)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#3b82f6",
+                      fontSize: 13,
+                      marginTop: 4,
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
+                  >
+                    View entry &rarr;
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={onClose}
+              style={{
+                marginTop: 16,
+                width: "100%",
+                padding: "8px 0",
+                background: "#f3f4f6",
+                border: "1px solid #d1d5db",
+                borderRadius: 6,
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              Close
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 }
+
+const EntryMarkers = memo(function EntryMarkers({
+  entries,
+  currentUserId,
+}: {
+  entries: JournalEntry[];
+  currentUserId: string;
+}) {
+  return (
+    <>
+      {entries.map((entry) => (
+        <Marker
+          key={entry.id}
+          position={[entry.latitude!, entry.longitude!]}
+          icon={entry.user_id === currentUserId ? blueIcon : redIcon}
+        >
+          <Popup>
+            <div className="text-sm">
+              <p className="font-semibold">{entry.title}</p>
+              <p className="text-gray-500 capitalize">{entry.entry_type}</p>
+              <p className="text-gray-400">
+                {new Date(entry.created_at).toLocaleDateString()}
+              </p>
+              <Link
+                href={`/dashboard/entry/${entry.id}`}
+                className="text-blue-600 hover:text-blue-500"
+              >
+                View entry
+              </Link>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+    </>
+  );
+});
 
 interface EntryMapProps {
   entries: JournalEntry[];
@@ -377,29 +560,7 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
         />
         <FitBounds entries={entries} />
         <DrawLassoSelector entries={entries} onSelect={setSelectedEntries} />
-        {entries.map((entry) => (
-          <Marker
-            key={entry.id}
-            position={[entry.latitude!, entry.longitude!]}
-            icon={entry.user_id === currentUserId ? blueIcon : redIcon}
-          >
-            <Popup>
-              <div className="text-sm">
-                <p className="font-semibold">{entry.title}</p>
-                <p className="text-gray-500 capitalize">{entry.entry_type}</p>
-                <p className="text-gray-400">
-                  {new Date(entry.created_at).toLocaleDateString()}
-                </p>
-                <Link
-                  href={`/dashboard/entry/${entry.id}`}
-                  className="text-blue-600 hover:text-blue-500"
-                >
-                  View entry
-                </Link>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        <EntryMarkers entries={entries} currentUserId={currentUserId} />
       </MapContainer>
       {selectedEntries.length > 0 && (
         <EntrySelectionModal entries={selectedEntries} onClose={handleClose} />

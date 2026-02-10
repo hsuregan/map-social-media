@@ -7,7 +7,7 @@ export default async function FeedPage() {
 
   const { data: entries } = await supabase
     .from("journal_entries")
-    .select("*")
+    .select("id, user_id, title, entry_type, text_content, public, created_at")
     .eq("public", true)
     .order("created_at", { ascending: false })
     .returns<JournalEntry[]>();
