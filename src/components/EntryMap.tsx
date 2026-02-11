@@ -3,7 +3,10 @@
 import { useEffect, useState, useCallback, useRef, memo } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import { JournalEntry } from "@/lib/types";
 import Link from "next/link";
 
@@ -560,7 +563,35 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
         />
         <FitBounds entries={entries} />
         <DrawLassoSelector entries={entries} onSelect={setSelectedEntries} />
-        <EntryMarkers entries={entries} currentUserId={currentUserId} />
+        <MarkerClusterGroup
+          chunkedLoading
+          disableClusteringAtZoom={18}
+          maxClusterRadius={40}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          iconCreateFunction={(cluster: any) => {
+            const count = cluster.getChildCount();
+            return L.divIcon({
+              html: `<div style="
+                background:#2563eb;
+                color:#fff;
+                border-radius:50%;
+                width:36px;
+                height:36px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:14px;
+                font-weight:700;
+                box-shadow:0 2px 6px rgba(0,0,0,0.3);
+                border:2px solid #fff;
+              ">${count}</div>`,
+              className: "",
+              iconSize: L.point(36, 36),
+            });
+          }}
+        >
+          <EntryMarkers entries={entries} currentUserId={currentUserId} />
+        </MarkerClusterGroup>
       </MapContainer>
       {selectedEntries.length > 0 && (
         <EntrySelectionModal entries={selectedEntries} onClose={handleClose} />
