@@ -7,7 +7,7 @@ A social journaling app built with Next.js and Supabase. Users can create text, 
 - **Framework:** Next.js 16 (App Router)
 - **Auth & Database:** Supabase (Auth, Postgres, Storage)
 - **Styling:** Tailwind CSS 4
-- **Maps:** Leaflet / react-leaflet
+- **Maps:** Leaflet / react-leaflet / react-leaflet-cluster
 - **Language:** TypeScript
 
 ## Features
@@ -19,6 +19,7 @@ A social journaling app built with Next.js and Supabase. Users can create text, 
 - Public/private entry visibility toggle
 - Public feed showing entries from all users
 - Map view with blue pins (own entries) and red pins (others' public entries)
+- Marker clustering: nearby pins group into a count circle, expanding into individual pins on zoom
 - User profiles with unique usernames
 - Settings page to change username
 - Debug page to manage user accounts
