@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Profile } from "@/lib/types";
 
 export default function SettingsPage() {
+  const [email, setEmail] = useState<string | null>(null);
   const [username, setUsername] = useState("");
   const [currentUsername, setCurrentUsername] = useState("");
   const [loading, setLoading] = useState(true);
@@ -27,6 +28,8 @@ export default function SettingsPage() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) return;
+
+      setEmail(user.email ?? null);
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -179,6 +182,14 @@ export default function SettingsPage() {
             {saving ? "Saving..." : "Save"}
           </button>
         </form>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Account</h2>
+        <div>
+          <p className="text-sm font-medium text-stone-700">Email</p>
+          <p className="mt-1 text-sm text-ink">{email ?? "No email associated"}</p>
+        </div>
       </div>
 
       <div className="mt-6 rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">
