@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { JournalEntry, Profile } from "@/lib/types";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -31,7 +32,9 @@ export default async function EntryDetailPage({
 
   const isOwner = user?.id === entry.user_id;
 
-  // Fetch profile and signed URL in parallel
+  // Fetch profile and signed URL in parallel (service role client bypasses
+  // storage policies so we can serve media from any user's public entries)
+  const serviceClient = createServiceClient();
   const [{ data: profile }, signedUrl] = await Promise.all([
     supabase
       .from("profiles")
@@ -39,7 +42,7 @@ export default async function EntryDetailPage({
       .eq("id", entry.user_id)
       .single<Pick<Profile, "username">>(),
     entry.media_url
-      ? supabase.storage
+      ? serviceClient.storage
           .from("journal-media")
           .createSignedUrl(entry.media_url, 3600)
           .then(({ data }) => data?.signedUrl ?? null)

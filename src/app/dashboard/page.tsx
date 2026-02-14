@@ -30,7 +30,7 @@ export default async function DashboardPage() {
   // Generate signed URLs for picture/video entries
   const mediaUrls: Record<string, string> = {};
   const mediaEntries = allEntries.filter(
-    (e) => (e.entry_type === "picture" || e.entry_type === "video") && e.media_url
+    (e) => e.entry_type !== "text" && e.media_url
   );
 
   if (mediaEntries.length > 0) {

@@ -70,6 +70,15 @@ export default function EntryCard({ entry, mediaUrl, author }: { entry: JournalE
                 {entry.text_content}
               </p>
             )}
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            {entry.entry_type === "audio" && mediaUrl && (
+              <audio
+                controls
+                preload="metadata"
+                src={mediaUrl}
+                className="mt-2 w-full"
+              />
+            )}
             <p className="mt-2 text-xs text-stone-500">
               {author && <span className="font-medium text-stone-700">{author}</span>}
               {author && <span className="mx-1.5">&middot;</span>}

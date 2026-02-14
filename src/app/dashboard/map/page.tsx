@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { JournalEntry } from "@/lib/types";
 import EntryMapWrapper from "@/components/EntryMapWrapper";
 
@@ -25,16 +26,18 @@ export default async function MapPage({
 
   const geoEntries = entries ?? [];
 
-  // Generate signed URLs for picture/video entries that have media
+  // Generate signed URLs using service role client (bypasses storage policies
+  // so we can serve media from any user's public entries)
+  const serviceClient = createServiceClient();
   const mediaUrls: Record<string, string> = {};
   const mediaEntries = geoEntries.filter(
-    (e) => (e.entry_type === "picture" || e.entry_type === "video") && e.media_url
+    (e) => e.entry_type !== "text" && e.media_url
   );
 
   if (mediaEntries.length > 0) {
     const results = await Promise.all(
       mediaEntries.map((e) =>
-        supabase.storage
+        serviceClient.storage
           .from("journal-media")
           .createSignedUrl(e.media_url!, 3600)
           .then(({ data }) => ({ id: e.id, url: data?.signedUrl ?? null }))
