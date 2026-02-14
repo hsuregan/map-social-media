@@ -143,7 +143,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
               <button
                 type="button"
                 onClick={takePhoto}
-                className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
+                className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
               >
                 Take Photo
               </button>
@@ -152,7 +152,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
               <button
                 type="button"
                 onClick={startVideoRecording}
-                className="flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover"
+                className="flex items-center gap-2 rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover"
               >
                 <span className="inline-block h-3 w-3 rounded-full bg-white" />
                 Start Recording
@@ -163,7 +163,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
                 <button
                   type="button"
                   onClick={stopVideoRecording}
-                  className="flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+                  className="flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
                 >
                   <span className="inline-block h-3 w-3 rounded-sm bg-white" />
                   Stop Recording
@@ -176,7 +176,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
             <button
               type="button"
               onClick={stopStream}
-              className="rounded-md border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
+              className="rounded-full border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
             >
               Cancel
             </button>
@@ -200,7 +200,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
           <button
             type="button"
             onClick={retake}
-            className="mt-3 rounded-md border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
+            className="mt-3 rounded-full border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
           >
             Retake
           </button>

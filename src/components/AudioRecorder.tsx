@@ -82,7 +82,7 @@ export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {
           <button
             type="button"
             onClick={startRecording}
-            className="flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover"
+            className="flex items-center gap-2 rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover"
           >
             <span className="inline-block h-3 w-3 rounded-full bg-white" />
             {audioUrl ? "Re-record" : "Start Recording"}
@@ -91,7 +91,7 @@ export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {
           <button
             type="button"
             onClick={stopRecording}
-            className="flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+            className="flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
           >
             <span className="inline-block h-3 w-3 rounded-sm bg-white" />
             Stop Recording

@@ -63,7 +63,7 @@ export default async function DashboardPage() {
           </p>
           <Link
             href="/dashboard/new"
-            className="mt-4 inline-block rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
+            className="mt-4 inline-block rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
           >
             New Entry
           </Link>

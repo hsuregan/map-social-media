@@ -46,7 +46,7 @@ export default function DeleteEntryButton({
     return (
       <button
         onClick={() => setConfirming(true)}
-        className="rounded-md border border-destructive-border px-4 py-2 text-sm font-medium text-destructive hover:bg-error-bg"
+        className="rounded-full border border-destructive-border px-4 py-2 text-sm font-medium text-destructive hover:bg-error-bg"
       >
         Delete
       </button>
@@ -59,13 +59,13 @@ export default function DeleteEntryButton({
       <button
         onClick={handleDelete}
         disabled={deleting}
-        className="rounded-md bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover disabled:opacity-50"
+        className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover disabled:opacity-50"
       >
         {deleting ? "Deleting..." : "Yes, delete"}
       </button>
       <button
         onClick={() => setConfirming(false)}
-        className="rounded-md border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
+        className="rounded-full border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
       >
         Cancel
       </button>

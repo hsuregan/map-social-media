@@ -30,7 +30,7 @@ export default async function Navbar() {
           <NavLinks />
           <Link
             href="/dashboard/new"
-            className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
+            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
           >
             New Entry
           </Link>

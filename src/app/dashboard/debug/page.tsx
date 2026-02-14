@@ -119,13 +119,13 @@ export default function DebugPage() {
                     <button
                       onClick={() => handleDelete(user.id)}
                       disabled={deleting === user.id}
-                      className="rounded-md bg-destructive px-3 py-1.5 text-sm font-semibold text-white hover:bg-destructive-hover disabled:opacity-50"
+                      className="rounded-full bg-destructive px-3 py-1.5 text-sm font-semibold text-white hover:bg-destructive-hover disabled:opacity-50"
                     >
                       {deleting === user.id ? "Deleting..." : "Yes, delete"}
                     </button>
                     <button
                       onClick={() => setConfirming(null)}
-                      className="rounded-md border border-sand px-3 py-1.5 text-sm font-medium text-stone-700 hover:bg-linen"
+                      className="rounded-full border border-sand px-3 py-1.5 text-sm font-medium text-stone-700 hover:bg-linen"
                     >
                       Cancel
                     </button>
@@ -133,7 +133,7 @@ export default function DebugPage() {
                 ) : (
                   <button
                     onClick={() => setConfirming(user.id)}
-                    className="rounded-md border border-destructive-border px-3 py-1.5 text-sm font-medium text-destructive hover:bg-error-bg"
+                    className="rounded-full border border-destructive-border px-3 py-1.5 text-sm font-medium text-destructive hover:bg-error-bg"
                   >
                     Delete
                   </button>

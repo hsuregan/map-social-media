@@ -130,7 +130,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving || username.trim() === currentUsername}
-            className="rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
+            className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

@@ -187,7 +187,7 @@ export default function NewEntryPage() {
                 key={t.value}
                 type="button"
                 onClick={() => setEntryType(t.value)}
-                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   entryType === t.value
                     ? "bg-accent text-white"
                     : "bg-linen text-stone-700 hover:bg-sand"
@@ -232,7 +232,7 @@ export default function NewEntryPage() {
                   setMediaSource("upload");
                   cameraBlobRef.current = null;
                 }}
-                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   mediaSource === "upload"
                     ? "bg-ink text-white"
                     : "bg-linen text-stone-700 hover:bg-sand"
@@ -246,7 +246,7 @@ export default function NewEntryPage() {
                   setMediaSource("camera");
                   mediaFileRef.current = null;
                 }}
-                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   mediaSource === "camera"
                     ? "bg-ink text-white"
                     : "bg-linen text-stone-700 hover:bg-sand"
@@ -302,14 +302,14 @@ export default function NewEntryPage() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
+            className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Entry"}
           </button>
           <button
             type="button"
             onClick={() => router.back()}
-            className="rounded-md border border-sand px-6 py-2.5 text-sm font-medium text-stone-700 hover:bg-linen"
+            className="rounded-full border border-sand px-6 py-2.5 text-sm font-medium text-stone-700 hover:bg-linen"
           >
             Cancel
           </button>
