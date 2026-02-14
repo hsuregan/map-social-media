@@ -26,13 +26,13 @@ const shadowSvg = `data:image/svg+xml,${encodeURIComponent(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconUrl: markerSvg("#2563eb"),
-  iconRetinaUrl: markerSvg("#2563eb"),
+  iconUrl: markerSvg("#B85C38"),
+  iconRetinaUrl: markerSvg("#B85C38"),
   shadowUrl: shadowSvg,
 });
 
-const blueIcon = new L.Icon({
-  iconUrl: markerSvg("#2563eb"),
+const accentIcon = new L.Icon({
+  iconUrl: markerSvg("#B85C38"),
   shadowUrl: shadowSvg,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -41,13 +41,20 @@ const blueIcon = new L.Icon({
 });
 
 const redIcon = new L.Icon({
-  iconUrl: markerSvg("#dc2626"),
+  iconUrl: markerSvg("#8B3A2F"),
   shadowUrl: shadowSvg,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+const badgeColors: Record<string, { bg: string; fg: string }> = {
+  text: { bg: "#E8E0D4", fg: "#6B5D4F" },
+  audio: { bg: "#E4D5E8", fg: "#6B4F7A" },
+  picture: { bg: "#D6E4D4", fg: "#4F6B4D" },
+  video: { bg: "#E8DDD0", fg: "#7A6442" },
+};
 
 function FitBounds({ entries }: { entries: JournalEntry[] }) {
   const map = useMap();
@@ -114,8 +121,8 @@ function DrawLassoSelector({
       map.dragging.disable();
 
       polygonRef.current = L.polygon([e.latlng], {
-        color: "#3b82f6",
-        fillColor: "#3b82f6",
+        color: "#B85C38",
+        fillColor: "#B85C38",
         fillOpacity: 0.15,
         weight: 2,
       }).addTo(map);
@@ -187,15 +194,15 @@ function DrawLassoSelector({
       <button
         onClick={toggleDrawMode}
         style={{
-          background: drawMode ? "#3b82f6" : "white",
-          color: drawMode ? "white" : "#333",
-          border: "2px solid rgba(0,0,0,0.2)",
+          background: drawMode ? "#B85C38" : "#F5F0E8",
+          color: drawMode ? "white" : "#2C2825",
+          border: "2px solid rgba(44,40,37,0.15)",
           borderRadius: 4,
           padding: "6px 12px",
           fontSize: 14,
           fontWeight: 500,
           cursor: "pointer",
-          boxShadow: "0 1px 5px rgba(0,0,0,0.15)",
+          boxShadow: "0 1px 5px rgba(44,40,37,0.15)",
         }}
       >
         {drawMode ? "Cancel" : "Select Area"}
@@ -232,19 +239,19 @@ function EntrySelectionModal({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "rgba(0,0,0,0.4)",
+        backgroundColor: "rgba(44,40,37,0.4)",
       }}
     >
       <div
         style={{
-          background: "white",
-          borderRadius: 8,
+          background: "#F5F0E8",
+          borderRadius: 12,
           padding: 24,
           maxWidth: 420,
           width: "90%",
           maxHeight: "70%",
           overflowY: "auto",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+          boxShadow: "0 8px 30px rgba(44,40,37,0.2)",
         }}
       >
         {viewingEntry ? (
@@ -255,7 +262,7 @@ function EntrySelectionModal({
               style={{
                 background: "none",
                 border: "none",
-                color: "#3b82f6",
+                color: "#B85C38",
                 cursor: "pointer",
                 fontSize: 14,
                 padding: 0,
@@ -265,10 +272,10 @@ function EntrySelectionModal({
               &larr; Back to list
             </button>
 
-            <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>
+            <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#2C2825" }}>
               {viewingEntry.title}
             </h3>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#666" }}>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8C857B" }}>
               {date(viewingEntry.created_at)}
             </p>
 
@@ -281,8 +288,8 @@ function EntrySelectionModal({
             >
               <span
                 style={{
-                  background: "#e0e7ff",
-                  color: "#3730a3",
+                  background: "#E8E0D4",
+                  color: "#6B5D4F",
                   padding: "1px 8px",
                   borderRadius: 9999,
                   fontSize: 12,
@@ -295,8 +302,8 @@ function EntrySelectionModal({
               {viewingEntry.public && (
                 <span
                   style={{
-                    background: "#dcfce7",
-                    color: "#15803d",
+                    background: "#DDE8D6",
+                    color: "#3D6B35",
                     padding: "1px 8px",
                     borderRadius: 9999,
                     fontSize: 12,
@@ -309,12 +316,12 @@ function EntrySelectionModal({
             </div>
 
             {viewingEntry.latitude != null && viewingEntry.longitude != null && (
-              <p style={{ fontSize: 13, color: "#666", marginTop: 12 }}>
+              <p style={{ fontSize: 13, color: "#8C857B", marginTop: 12 }}>
                 <a
                   href={`https://www.openstreetmap.org/?mlat=${viewingEntry.latitude}&mlon=${viewingEntry.longitude}#map=15/${viewingEntry.latitude}/${viewingEntry.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: "#3b82f6", textDecoration: "none" }}
+                  style={{ color: "#B85C38", textDecoration: "none" }}
                 >
                   {viewingEntry.latitude.toFixed(4)},{" "}
                   {viewingEntry.longitude.toFixed(4)}
@@ -328,7 +335,7 @@ function EntrySelectionModal({
                   marginTop: 16,
                   fontSize: 14,
                   lineHeight: 1.6,
-                  color: "#1f2937",
+                  color: "#2C2825",
                   whiteSpace: "pre-wrap",
                 }}
               >
@@ -337,11 +344,11 @@ function EntrySelectionModal({
             )}
 
             {viewingEntry.entry_type !== "text" && (
-              <p style={{ marginTop: 16, fontSize: 13, color: "#666" }}>
+              <p style={{ marginTop: 16, fontSize: 13, color: "#5C564E" }}>
                 This entry contains {viewingEntry.entry_type} media.{" "}
                 <Link
                   href={`/dashboard/entry/${viewingEntry.id}`}
-                  style={{ color: "#3b82f6", textDecoration: "none" }}
+                  style={{ color: "#B85C38", textDecoration: "none" }}
                 >
                   Open full entry &rarr;
                 </Link>
@@ -354,12 +361,13 @@ function EntrySelectionModal({
                 marginTop: 20,
                 width: "100%",
                 padding: "8px 0",
-                background: "#f3f4f6",
-                border: "1px solid #d1d5db",
+                background: "#EDE8DF",
+                border: "1px solid #D4CFC6",
                 borderRadius: 6,
                 cursor: "pointer",
                 fontSize: 14,
                 fontWeight: 500,
+                color: "#2C2825",
               }}
             >
               Close
@@ -376,7 +384,7 @@ function EntrySelectionModal({
                 marginBottom: 16,
               }}
             >
-              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: "#2C2825" }}>
                 {entries.length}{" "}
                 {entries.length === 1 ? "Entry" : "Entries"} in Selection
               </h3>
@@ -387,7 +395,7 @@ function EntrySelectionModal({
                   border: "none",
                   fontSize: 22,
                   cursor: "pointer",
-                  color: "#666",
+                  color: "#5C564E",
                   lineHeight: 1,
                   padding: "0 4px",
                 }}
@@ -401,7 +409,7 @@ function EntrySelectionModal({
                   key={entry.id}
                   style={{
                     padding: "10px 0",
-                    borderBottom: "1px solid #eee",
+                    borderBottom: "1px solid #EDE8DF",
                   }}
                 >
                   <p
@@ -409,6 +417,7 @@ function EntrySelectionModal({
                       margin: 0,
                       fontWeight: 600,
                       fontSize: 15,
+                      color: "#2C2825",
                     }}
                   >
                     {entry.title}
@@ -424,8 +433,8 @@ function EntrySelectionModal({
                   >
                     <span
                       style={{
-                        background: "#e0e7ff",
-                        color: "#3730a3",
+                        background: "#E8E0D4",
+                        color: "#6B5D4F",
                         padding: "1px 8px",
                         borderRadius: 9999,
                         fontSize: 12,
@@ -435,7 +444,7 @@ function EntrySelectionModal({
                     >
                       {entry.entry_type}
                     </span>
-                    <span style={{ color: "#888" }}>
+                    <span style={{ color: "#8C857B" }}>
                       {new Date(entry.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -444,7 +453,7 @@ function EntrySelectionModal({
                     style={{
                       background: "none",
                       border: "none",
-                      color: "#3b82f6",
+                      color: "#B85C38",
                       fontSize: 13,
                       marginTop: 4,
                       padding: 0,
@@ -462,12 +471,13 @@ function EntrySelectionModal({
                 marginTop: 16,
                 width: "100%",
                 padding: "8px 0",
-                background: "#f3f4f6",
-                border: "1px solid #d1d5db",
+                background: "#EDE8DF",
+                border: "1px solid #D4CFC6",
                 borderRadius: 6,
                 cursor: "pointer",
                 fontSize: 14,
                 fontWeight: 500,
+                color: "#2C2825",
               }}
             >
               Close
@@ -482,47 +492,199 @@ function EntrySelectionModal({
 const EntryMarkers = memo(function EntryMarkers({
   entries,
   currentUserId,
+  mediaUrls,
+  setMarkerRef,
 }: {
   entries: JournalEntry[];
   currentUserId: string;
+  mediaUrls: Record<string, string>;
+  setMarkerRef: (id: string, marker: L.Marker | null) => void;
 }) {
   return (
     <>
-      {entries.map((entry) => (
-        <Marker
-          key={entry.id}
-          position={[entry.latitude!, entry.longitude!]}
-          icon={entry.user_id === currentUserId ? blueIcon : redIcon}
-        >
-          <Popup>
-            <div className="text-sm">
-              <p className="font-semibold">{entry.title}</p>
-              <p className="text-gray-500 capitalize">{entry.entry_type}</p>
-              <p className="text-gray-400">
-                {new Date(entry.created_at).toLocaleDateString()}
-              </p>
-              <Link
-                href={`/dashboard/entry/${entry.id}`}
-                className="text-blue-600 hover:text-blue-500"
-              >
-                View entry
-              </Link>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      {entries.map((entry) => {
+        const badge = badgeColors[entry.entry_type] ?? badgeColors.text;
+        const mediaUrl = mediaUrls[entry.id];
+        const shortDate = new Date(entry.created_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        return (
+          <Marker
+            key={entry.id}
+            position={[entry.latitude!, entry.longitude!]}
+            icon={entry.user_id === currentUserId ? accentIcon : redIcon}
+            ref={(marker) => setMarkerRef(entry.id, marker)}
+          >
+            <Popup>
+              <div style={{ minWidth: 200, maxWidth: 240 }}>
+                {/* Image preview for picture entries */}
+                {entry.entry_type === "picture" && mediaUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={mediaUrl}
+                    alt={entry.title}
+                    style={{
+                      width: "100%",
+                      height: 140,
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                )}
+
+                {/* Video preview for video entries */}
+                {entry.entry_type === "video" && mediaUrl && (
+                  <div style={{ position: "relative", width: "100%", height: 140 }}>
+                    <video
+                      muted
+                      preload="metadata"
+                      style={{
+                        width: "100%",
+                        height: 140,
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    >
+                      <source src={mediaUrl} />
+                    </video>
+                    {/* Play icon overlay */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "rgba(0,0,0,0.2)",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.85)" />
+                        <polygon points="14,11 27,18 14,25" fill="#2C2825" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+
+                {/* Content area with padding */}
+                <div style={{ padding: "10px 14px 12px" }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontWeight: 600,
+                      fontSize: 14,
+                      letterSpacing: "-0.01em",
+                      color: "#2C2825",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {entry.title}
+                  </p>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+                    <span
+                      style={{
+                        background: badge.bg,
+                        color: badge.fg,
+                        padding: "1px 8px",
+                        borderRadius: 9999,
+                        fontSize: 11,
+                        fontWeight: 500,
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {entry.entry_type}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "#8C857B",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.04em",
+                      }}
+                    >
+                      {shortDate}
+                    </span>
+                  </div>
+
+                  <Link
+                    href={`/dashboard/entry/${entry.id}?from=map`}
+                    style={{
+                      display: "inline-block",
+                      marginTop: 8,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: "#B85C38",
+                      textDecoration: "none",
+                    }}
+                  >
+                    View entry &rarr;
+                  </Link>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
     </>
   );
 });
 
+function AutoOpenPopup({
+  popupEntryId,
+  markerRefsMap,
+}: {
+  popupEntryId: string;
+  markerRefsMap: React.RefObject<Map<string, L.Marker>>;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    // Wait for markers to mount
+    const timer = setTimeout(() => {
+      const marker = markerRefsMap.current?.get(popupEntryId);
+      if (!marker) return;
+
+      const latLng = marker.getLatLng();
+      map.flyTo(latLng, 18, { duration: 1.2 });
+
+      // After flight completes, open the popup
+      const popupTimer = setTimeout(() => {
+        marker.openPopup();
+      }, 1300);
+
+      return () => clearTimeout(popupTimer);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [popupEntryId, markerRefsMap, map]);
+
+  return null;
+}
+
 interface EntryMapProps {
   entries: JournalEntry[];
   currentUserId: string;
+  mediaUrls: Record<string, string>;
+  popupEntryId: string | null;
 }
 
-export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
+export default function EntryMap({ entries, currentUserId, mediaUrls, popupEntryId }: EntryMapProps) {
   const [selectedEntries, setSelectedEntries] = useState<JournalEntry[]>([]);
   const mapRef = useRef<L.Map | null>(null);
+  const markerRefsMap = useRef(new Map<string, L.Marker>());
+
+  const setMarkerRef = useCallback((id: string, marker: L.Marker | null) => {
+    if (marker) {
+      markerRefsMap.current.set(id, marker);
+    } else {
+      markerRefsMap.current.delete(id);
+    }
+  }, []);
 
   const handleClose = useCallback(() => {
     setSelectedEntries([]);
@@ -536,7 +698,7 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
       <MapContainer
         center={[0, 0]}
         zoom={2}
-        className="h-[600px] w-full rounded-lg"
+        className="h-[600px] w-full rounded-xl"
         ref={mapRef}
       >
         <TileLayer
@@ -554,7 +716,7 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
             const count = cluster.getChildCount();
             return L.divIcon({
               html: `<div style="
-                background:#2563eb;
+                background:#B85C38;
                 color:#fff;
                 border-radius:50%;
                 width:36px;
@@ -564,7 +726,7 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
                 justify-content:center;
                 font-size:14px;
                 font-weight:700;
-                box-shadow:0 2px 6px rgba(0,0,0,0.3);
+                box-shadow:0 2px 6px rgba(44,40,37,0.3);
                 border:2px solid #fff;
               ">${count}</div>`,
               className: "",
@@ -572,8 +734,16 @@ export default function EntryMap({ entries, currentUserId }: EntryMapProps) {
             });
           }}
         >
-          <EntryMarkers entries={entries} currentUserId={currentUserId} />
+          <EntryMarkers
+            entries={entries}
+            currentUserId={currentUserId}
+            mediaUrls={mediaUrls}
+            setMarkerRef={setMarkerRef}
+          />
         </MarkerClusterGroup>
+        {popupEntryId && (
+          <AutoOpenPopup popupEntryId={popupEntryId} markerRefsMap={markerRefsMap} />
+        )}
       </MapContainer>
       {selectedEntries.length > 0 && (
         <EntrySelectionModal entries={selectedEntries} onClose={handleClose} />

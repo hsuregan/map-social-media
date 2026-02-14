@@ -6,7 +6,7 @@ import { JournalEntry } from "@/lib/types";
 const EntryMap = dynamic(() => import("@/components/EntryMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[600px] w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+    <div className="flex h-[600px] w-full items-center justify-center rounded-xl bg-linen text-stone-500">
       Loading map...
     </div>
   ),
@@ -15,8 +15,22 @@ const EntryMap = dynamic(() => import("@/components/EntryMap"), {
 interface EntryMapWrapperProps {
   entries: JournalEntry[];
   currentUserId: string;
+  mediaUrls: Record<string, string>;
+  popupEntryId: string | null;
 }
 
-export default function EntryMapWrapper({ entries, currentUserId }: EntryMapWrapperProps) {
-  return <EntryMap entries={entries} currentUserId={currentUserId} />;
+export default function EntryMapWrapper({
+  entries,
+  currentUserId,
+  mediaUrls,
+  popupEntryId,
+}: EntryMapWrapperProps) {
+  return (
+    <EntryMap
+      entries={entries}
+      currentUserId={currentUserId}
+      mediaUrls={mediaUrls}
+      popupEntryId={popupEntryId}
+    />
+  );
 }

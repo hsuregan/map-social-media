@@ -52,13 +52,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-cream px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-semibold tracking-tight text-ink">
             {mode === "login" ? "Sign In" : "Create Account"}
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-stone-700">
             {mode === "login"
               ? "Welcome back to your journal"
               : "Start your journaling journey"}
@@ -67,12 +67,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
               {error}
             </div>
           )}
           {message && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+            <div className="rounded-md bg-success-bg p-3 text-sm text-success-fg">
               {message}
             </div>
           )}
@@ -80,7 +80,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-stone-700"
             >
               Email
             </label>
@@ -90,7 +90,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-sand bg-ivory px-3 py-2 text-ink shadow-[var(--shadow-warm-sm)] focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
               placeholder="you@example.com"
             />
           </div>
@@ -98,7 +98,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-stone-700"
             >
               Password
             </label>
@@ -109,7 +109,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-sand bg-ivory px-3 py-2 text-ink shadow-[var(--shadow-warm-sm)] focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
               placeholder="••••••••"
             />
           </div>
@@ -117,7 +117,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            className="w-full rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent-light focus:ring-offset-2 disabled:opacity-50"
           >
             {loading
               ? "Loading..."
@@ -127,13 +127,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-600">
+        <div className="border-t border-linen" />
+
+        <p className="text-center text-sm text-stone-700">
           {mode === "login" ? (
             <>
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/signup"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-accent hover:text-accent-hover"
               >
                 Sign up
               </Link>
@@ -143,7 +145,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               Already have an account?{" "}
               <Link
                 href="/auth/login"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-accent hover:text-accent-hover"
               >
                 Sign in
               </Link>

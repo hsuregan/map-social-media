@@ -84,27 +84,27 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-2xl">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-500">Loading...</p>
+        <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Settings</h1>
+        <p className="text-stone-500">Loading...</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Settings</h1>
+      <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Settings</h1>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Profile</h2>
+      <div className="rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Profile</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
               {error}
             </div>
           )}
           {success && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+            <div className="rounded-md bg-success-bg p-3 text-sm text-success-fg">
               {success}
             </div>
           )}
@@ -112,7 +112,7 @@ export default function SettingsPage() {
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-stone-700"
             >
               Username
             </label>
@@ -123,14 +123,14 @@ export default function SettingsPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter a username"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-sand bg-ivory px-3 py-2 text-ink shadow-[var(--shadow-warm-sm)] focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
             />
           </div>
 
           <button
             type="submit"
             disabled={saving || username.trim() === currentUsername}
-            className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 disabled:opacity-50"
+            className="rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

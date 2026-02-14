@@ -148,13 +148,13 @@ export default function NewEntryPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">
+      <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">
         New Journal Entry
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+          <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
             {error}
           </div>
         )}
@@ -162,7 +162,7 @@ export default function NewEntryPage() {
         <div>
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-stone-700"
           >
             Title
           </label>
@@ -173,12 +173,12 @@ export default function NewEntryPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Entry title"
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-sand bg-ivory px-3 py-2 text-ink shadow-[var(--shadow-warm-sm)] focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-stone-700 mb-2">
             Entry Type
           </label>
           <div className="flex gap-2">
@@ -187,10 +187,10 @@ export default function NewEntryPage() {
                 key={t.value}
                 type="button"
                 onClick={() => setEntryType(t.value)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   entryType === t.value
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-accent text-white"
+                    : "bg-linen text-stone-700 hover:bg-sand"
                 }`}
               >
                 {t.label}
@@ -199,11 +199,11 @@ export default function NewEntryPage() {
           </div>
         </div>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-stone-500">
           {geo.loading ? (
             <span>Detecting location...</span>
           ) : geo.latitude !== null && geo.longitude !== null ? (
-            <span className="text-green-600">
+            <span className="text-success-fg">
               Location captured ({geo.latitude.toFixed(4)}, {geo.longitude.toFixed(4)})
             </span>
           ) : (
@@ -232,10 +232,10 @@ export default function NewEntryPage() {
                   setMediaSource("upload");
                   cameraBlobRef.current = null;
                 }}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   mediaSource === "upload"
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-ink text-white"
+                    : "bg-linen text-stone-700 hover:bg-sand"
                 }`}
               >
                 Upload File
@@ -246,10 +246,10 @@ export default function NewEntryPage() {
                   setMediaSource("camera");
                   mediaFileRef.current = null;
                 }}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   mediaSource === "camera"
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-ink text-white"
+                    : "bg-linen text-stone-700 hover:bg-sand"
                 }`}
               >
                 Use Camera
@@ -291,9 +291,9 @@ export default function NewEntryPage() {
             type="checkbox"
             checked={isPublic}
             onChange={(e) => setIsPublic(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-sand"
           />
-          <label htmlFor="public" className="text-sm text-gray-700">
+          <label htmlFor="public" className="text-sm text-stone-700">
             Make this entry public
           </label>
         </div>
@@ -302,14 +302,14 @@ export default function NewEntryPage() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 disabled:opacity-50"
+            className="rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Entry"}
           </button>
           <button
             type="button"
             onClick={() => router.back()}
-            className="rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-md border border-sand px-6 py-2.5 text-sm font-medium text-stone-700 hover:bg-linen"
           >
             Cancel
           </button>

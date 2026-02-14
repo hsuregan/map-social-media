@@ -72,7 +72,7 @@ export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
           {error}
         </div>
       )}
@@ -82,7 +82,7 @@ export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {
           <button
             type="button"
             onClick={startRecording}
-            className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+            className="flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover"
           >
             <span className="inline-block h-3 w-3 rounded-full bg-white" />
             {audioUrl ? "Re-record" : "Start Recording"}
@@ -91,14 +91,14 @@ export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {
           <button
             type="button"
             onClick={stopRecording}
-            className="flex items-center gap-2 rounded-lg bg-gray-800 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
+            className="flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
           >
             <span className="inline-block h-3 w-3 rounded-sm bg-white" />
             Stop Recording
           </button>
         )}
         {recording && (
-          <span className="text-sm text-red-600 animate-pulse">
+          <span className="text-sm text-destructive animate-pulse">
             Recording...
           </span>
         )}
@@ -106,7 +106,7 @@ export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {
 
       {audioUrl && (
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
+          <p className="mb-2 text-sm font-medium text-stone-700">Preview:</p>
           <audio controls src={audioUrl} className="w-full" />
         </div>
       )}

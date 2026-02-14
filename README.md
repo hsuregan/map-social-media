@@ -20,6 +20,10 @@ A social journaling app built with Next.js and Supabase. Users can create text, 
 - Public feed showing entries from all users
 - Map view with blue pins (own entries) and red pins (others' public entries)
 - Marker clustering: nearby pins group into a count circle, expanding into individual pins on zoom
+- Warm-styled map popups with image/video previews, earth-tone badges, and "View entry" links
+- "Back to Map" navigation from entry detail page that re-opens the originating popup
+- Media previews (image thumbnails, video with play overlay) on entry cards in feed and journal
+- Masonry/waterfall layout on the public feed for varied card heights
 - User profiles with unique usernames
 - Settings page to change username
 - Debug page to manage user accounts

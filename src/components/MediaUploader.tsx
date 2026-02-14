@@ -46,7 +46,7 @@ export default function MediaUploader({
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
           {error}
         </div>
       )}
@@ -55,7 +55,7 @@ export default function MediaUploader({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="rounded-lg border-2 border-dashed border-gray-300 px-6 py-4 text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-700"
+          className="rounded-xl border-2 border-dashed border-sand px-6 py-4 text-sm font-medium text-stone-700 hover:border-accent hover:text-accent"
         >
           {fileName
             ? `Selected: ${fileName}`
@@ -72,20 +72,20 @@ export default function MediaUploader({
 
       {preview && mediaType === "picture" && (
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
+          <p className="mb-2 text-sm font-medium text-stone-700">Preview:</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
             alt="Preview"
-            className="max-h-64 rounded-lg object-contain"
+            className="max-h-64 rounded-xl object-contain"
           />
         </div>
       )}
 
       {preview && mediaType === "video" && (
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
-          <video controls src={preview} className="max-h-64 rounded-lg" />
+          <p className="mb-2 text-sm font-medium text-stone-700">Preview:</p>
+          <video controls src={preview} className="max-h-64 rounded-xl" />
         </div>
       )}
     </div>

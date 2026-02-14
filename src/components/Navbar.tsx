@@ -20,33 +20,33 @@ export default async function Navbar() {
   }
 
   return (
-    <nav className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/dashboard" className="text-xl font-bold text-gray-900">
+    <nav className="border-b border-linen bg-ivory">
+      <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-3">
+        <Link href="/dashboard" className="text-xl font-semibold tracking-tight text-ink">
           {username ? `${username}'s Journal` : "Journal"}
         </Link>
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard/feed"
-            className="text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="text-sm font-medium text-stone-700 hover:text-ink"
           >
             Feed
           </Link>
           <Link
             href="/dashboard/map"
-            className="text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="text-sm font-medium text-stone-700 hover:text-ink"
           >
             Map
           </Link>
           <Link
             href="/dashboard/settings"
-            className="text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="text-sm font-medium text-stone-700 hover:text-ink"
           >
             Settings
           </Link>
           <Link
             href="/dashboard/new"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
           >
             New Entry
           </Link>

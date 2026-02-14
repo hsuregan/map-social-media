@@ -122,7 +122,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
           {error}
         </div>
       )}
@@ -136,14 +136,14 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
           ref={videoRef}
           muted
           playsInline
-          className="max-h-80 w-full rounded-lg bg-black object-contain"
+          className="max-h-80 w-full rounded-xl bg-ink object-contain"
         />
         <div className="mt-3 flex items-center gap-3">
             {mode === "picture" && (
               <button
                 type="button"
                 onClick={takePhoto}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+                className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
               >
                 Take Photo
               </button>
@@ -152,7 +152,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
               <button
                 type="button"
                 onClick={startVideoRecording}
-                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+                className="flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-semibold text-white hover:bg-destructive-hover"
               >
                 <span className="inline-block h-3 w-3 rounded-full bg-white" />
                 Start Recording
@@ -163,12 +163,12 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
                 <button
                   type="button"
                   onClick={stopVideoRecording}
-                  className="flex items-center gap-2 rounded-lg bg-gray-800 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
+                  className="flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
                 >
                   <span className="inline-block h-3 w-3 rounded-sm bg-white" />
                   Stop Recording
                 </button>
-                <span className="animate-pulse text-sm text-red-600">
+                <span className="animate-pulse text-sm text-destructive">
                   Recording...
                 </span>
               </>
@@ -176,7 +176,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
             <button
               type="button"
               onClick={stopStream}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-md border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
             >
               Cancel
             </button>
@@ -186,21 +186,21 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
       {/* Preview of captured media */}
       {capturedUrl && (
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700">Captured:</p>
+          <p className="mb-2 text-sm font-medium text-stone-700">Captured:</p>
           {mode === "picture" ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={capturedUrl}
               alt="Captured"
-              className="max-h-64 rounded-lg object-contain"
+              className="max-h-64 rounded-xl object-contain"
             />
           ) : (
-            <video controls src={capturedUrl} className="max-h-64 rounded-lg" />
+            <video controls src={capturedUrl} className="max-h-64 rounded-xl" />
           )}
           <button
             type="button"
             onClick={retake}
-            className="mt-3 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="mt-3 rounded-md border border-sand px-4 py-2 text-sm font-medium text-stone-700 hover:bg-linen"
           >
             Retake
           </button>
@@ -212,7 +212,7 @@ export default function CameraCapture({ mode, onCaptured }: CameraCaptureProps) 
         <button
           type="button"
           onClick={startCamera}
-          className="rounded-lg border-2 border-dashed border-gray-300 px-6 py-4 text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-700"
+          className="rounded-xl border-2 border-dashed border-sand px-6 py-4 text-sm font-medium text-stone-700 hover:border-accent hover:text-accent"
         >
           {mode === "picture" ? "Open Camera to Take Photo" : "Open Camera to Record Video"}
         </button>

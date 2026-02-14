@@ -6,10 +6,13 @@ import DeleteEntryButton from "@/components/DeleteEntryButton";
 
 export default async function EntryDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const { from } = await searchParams;
   const supabase = await createClient();
 
   // Fetch entry and user in parallel
@@ -55,27 +58,36 @@ export default async function EntryDetailPage({
   return (
     <div className="mx-auto max-w-2xl">
       <div className="mb-6">
-        <Link
-          href={isOwner ? "/dashboard" : "/dashboard/feed"}
-          className="text-sm text-blue-600 hover:text-blue-500"
-        >
-          &larr; {isOwner ? "Back to Journal" : "Back to Feed"}
-        </Link>
+        {from === "map" ? (
+          <Link
+            href={`/dashboard/map?popup=${id}`}
+            className="text-sm text-accent hover:text-accent-hover"
+          >
+            &larr; Back to Map
+          </Link>
+        ) : (
+          <Link
+            href={isOwner ? "/dashboard" : "/dashboard/feed"}
+            className="text-sm text-accent hover:text-accent-hover"
+          >
+            &larr; {isOwner ? "Back to Journal" : "Back to Feed"}
+          </Link>
+        )}
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{entry.title}</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-2xl font-semibold tracking-tight text-ink">{entry.title}</h1>
+            <p className="mt-1 text-sm text-stone-500">
               by {profile?.username ?? "Unknown"} &middot; {date}
             </p>
             <div className="mt-2 flex gap-2">
-              <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 capitalize">
+              <span className="inline-block rounded-full bg-linen px-3 py-1 text-xs font-medium text-stone-700 capitalize">
                 {entry.entry_type}
               </span>
               {entry.public && (
-                <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+                <span className="inline-block rounded-full bg-success-bg px-3 py-1 text-xs font-medium text-success-fg">
                   Public
                 </span>
               )}
@@ -87,7 +99,7 @@ export default async function EntryDetailPage({
         </div>
 
         {entry.latitude !== null && entry.longitude !== null && (
-          <div className="mt-4 flex items-center gap-1.5 text-sm text-gray-500">
+          <div className="mt-4 flex items-center gap-1.5 text-sm text-stone-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -104,7 +116,7 @@ export default async function EntryDetailPage({
               href={`https://www.openstreetmap.org/?mlat=${entry.latitude}&mlon=${entry.longitude}#map=15/${entry.latitude}/${entry.longitude}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-500"
+              className="text-accent hover:text-accent-hover"
             >
               {entry.latitude.toFixed(4)}, {entry.longitude.toFixed(4)}
             </a>
@@ -114,7 +126,7 @@ export default async function EntryDetailPage({
         <div className="mt-6">
           {entry.entry_type === "text" && entry.text_content && (
             <div className="prose max-w-none">
-              <p className="whitespace-pre-wrap text-gray-800">
+              <p className="whitespace-pre-wrap text-ink">
                 {entry.text_content}
               </p>
             </div>
@@ -132,7 +144,7 @@ export default async function EntryDetailPage({
               <img
                 src={signedUrl}
                 alt={entry.title}
-                className="max-w-full rounded-lg"
+                className="max-w-full rounded-xl"
               />
             </div>
           )}
@@ -142,7 +154,7 @@ export default async function EntryDetailPage({
               <video
                 controls
                 src={signedUrl}
-                className="max-w-full rounded-lg"
+                className="max-w-full rounded-xl"
               />
             </div>
           )}

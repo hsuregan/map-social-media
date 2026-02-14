@@ -64,13 +64,13 @@ describe("EntryCard", () => {
   it("applies correct color class for text type", () => {
     render(<EntryCard entry={makeEntry({ entry_type: "text" })} />);
     const icon = screen.getByText("T");
-    expect(icon.className).toContain("bg-blue-100");
+    expect(icon.className).toContain("bg-badge-text-bg");
   });
 
   it("applies correct color class for audio type", () => {
     render(<EntryCard entry={makeEntry({ entry_type: "audio" })} />);
     const icon = screen.getByText("A");
-    expect(icon.className).toContain("bg-purple-100");
+    expect(icon.className).toContain("bg-badge-audio-bg");
   });
 
   it("shows text preview for text entries", () => {
@@ -81,5 +81,15 @@ describe("EntryCard", () => {
   it("links to the entry detail page", () => {
     render(<EntryCard entry={makeEntry({ id: "entry-42" })} />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/dashboard/entry/entry-42");
+  });
+
+  it("displays the author username when provided", () => {
+    render(<EntryCard entry={makeEntry()} author="alice" />);
+    expect(screen.getByText("alice")).toBeInTheDocument();
+  });
+
+  it("does not render author when not provided", () => {
+    render(<EntryCard entry={makeEntry()} />);
+    expect(screen.queryByText("·")).not.toBeInTheDocument();
   });
 });
