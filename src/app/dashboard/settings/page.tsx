@@ -11,6 +11,14 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Password change state
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+
   const supabase = createClient();
 
   useEffect(() => {
@@ -81,6 +89,42 @@ export default function SettingsPage() {
     }
   };
 
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    if (newPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+
+    setSavingPassword(true);
+
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (updateError) throw updateError;
+
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess("Password updated successfully.");
+    } catch (err) {
+      setPasswordError(
+        err instanceof Error ? err.message : "Failed to update password."
+      );
+    } finally {
+      setSavingPassword(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-10">
@@ -133,6 +177,67 @@ export default function SettingsPage() {
             className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
+          </button>
+        </form>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-ink">Change Password</h2>
+
+        <form onSubmit={handlePasswordChange} className="space-y-4">
+          {passwordError && (
+            <div className="rounded-md bg-error-bg p-3 text-sm text-error-fg">
+              {passwordError}
+            </div>
+          )}
+          {passwordSuccess && (
+            <div className="rounded-md bg-success-bg p-3 text-sm text-success-fg">
+              {passwordSuccess}
+            </div>
+          )}
+
+          <div>
+            <label
+              htmlFor="new-password"
+              className="block text-sm font-medium text-stone-700"
+            >
+              New Password
+            </label>
+            <input
+              id="new-password"
+              type="password"
+              required
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="At least 6 characters"
+              className="mt-1 block w-full rounded-md border border-sand bg-ivory px-3 py-2 text-ink shadow-[var(--shadow-warm-sm)] focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirm-password"
+              className="block text-sm font-medium text-stone-700"
+            >
+              Confirm New Password
+            </label>
+            <input
+              id="confirm-password"
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter new password"
+              className="mt-1 block w-full rounded-md border border-sand bg-ivory px-3 py-2 text-ink shadow-[var(--shadow-warm-sm)] focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={savingPassword || !newPassword || !confirmPassword}
+            className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-warm-sm)] hover:bg-accent-hover disabled:opacity-50"
+          >
+            {savingPassword ? "Updating..." : "Update Password"}
           </button>
         </form>
       </div>

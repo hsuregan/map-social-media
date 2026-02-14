@@ -208,4 +208,131 @@ describe("SettingsPage", () => {
       expect(screen.getByRole("heading", { name: /profile/i })).toBeInTheDocument();
     });
   });
+
+  // --- Change Password tests ---
+
+  it("shows change password section", async () => {
+    render(<SettingsPage />);
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: /change password/i })).toBeInTheDocument();
+    });
+  });
+
+  it("has new password and confirm password fields", async () => {
+    render(<SettingsPage />);
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toBeInTheDocument();
+      expect(screen.getByLabelText("Confirm New Password")).toBeInTheDocument();
+    });
+  });
+
+  it("has an Update Password button", async () => {
+    render(<SettingsPage />);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /update password/i })).toBeInTheDocument();
+    });
+  });
+
+  it("disables Update Password button when fields are empty", async () => {
+    render(<SettingsPage />);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /update password/i })).toBeDisabled();
+    });
+  });
+
+  it("shows error when password is too short", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText("New Password"), "abc");
+    await user.type(screen.getByLabelText("Confirm New Password"), "abc");
+    await user.click(screen.getByRole("button", { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/at least 6 characters/i)).toBeInTheDocument();
+    });
+  });
+
+  it("shows error when passwords do not match", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText("New Password"), "newpass123");
+    await user.type(screen.getByLabelText("Confirm New Password"), "different");
+    await user.click(screen.getByRole("button", { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
+    });
+  });
+
+  it("shows success message after password update", async () => {
+    mockSupabase.auth.updateUser.mockResolvedValue({ data: { user: {} }, error: null });
+
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText("New Password"), "newpass123");
+    await user.type(screen.getByLabelText("Confirm New Password"), "newpass123");
+    await user.click(screen.getByRole("button", { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/password updated successfully/i)).toBeInTheDocument();
+    });
+    expect(mockSupabase.auth.updateUser).toHaveBeenCalledWith({ password: "newpass123" });
+  });
+
+  it("clears password fields after successful update", async () => {
+    mockSupabase.auth.updateUser.mockResolvedValue({ data: { user: {} }, error: null });
+
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText("New Password"), "newpass123");
+    await user.type(screen.getByLabelText("Confirm New Password"), "newpass123");
+    await user.click(screen.getByRole("button", { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toHaveValue("");
+      expect(screen.getByLabelText("Confirm New Password")).toHaveValue("");
+    });
+  });
+
+  it("shows error message when password update fails", async () => {
+    mockSupabase.auth.updateUser.mockResolvedValue({
+      data: { user: null },
+      error: new Error("Password update failed"),
+    });
+
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("New Password")).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText("New Password"), "newpass123");
+    await user.type(screen.getByLabelText("Confirm New Password"), "newpass123");
+    await user.click(screen.getByRole("button", { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/password update failed/i)).toBeInTheDocument();
+    });
+  });
 });
