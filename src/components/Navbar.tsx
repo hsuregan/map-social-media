@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import NavLinks from "@/components/NavLinks";
+import MobileSidebar from "@/components/MobileSidebar";
 
 export default async function Navbar() {
   const supabase = await createClient();
@@ -26,7 +27,9 @@ export default async function Navbar() {
         <Link href="/dashboard" className="text-xl font-semibold tracking-tight text-ink">
           {username ? `${username}'s Journal` : "Journal"}
         </Link>
-        <div className="flex items-center gap-4">
+
+        {/* Desktop nav — hidden on mobile */}
+        <div className="hidden items-center gap-4 sm:flex">
           <NavLinks />
           <Link
             href="/dashboard/new"
@@ -36,6 +39,9 @@ export default async function Navbar() {
           </Link>
           <LogoutButton />
         </div>
+
+        {/* Mobile hamburger + sidebar */}
+        <MobileSidebar />
       </div>
     </nav>
   );
