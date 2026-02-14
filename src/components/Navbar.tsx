@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
+import NavLinks from "@/components/NavLinks";
 
 export default async function Navbar() {
   const supabase = await createClient();
@@ -26,24 +27,7 @@ export default async function Navbar() {
           {username ? `${username}'s Journal` : "Journal"}
         </Link>
         <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard/feed"
-            className="text-sm font-medium text-stone-700 hover:text-ink"
-          >
-            Feed
-          </Link>
-          <Link
-            href="/dashboard/map"
-            className="text-sm font-medium text-stone-700 hover:text-ink"
-          >
-            Map
-          </Link>
-          <Link
-            href="/dashboard/settings"
-            className="text-sm font-medium text-stone-700 hover:text-ink"
-          >
-            Settings
-          </Link>
+          <NavLinks />
           <Link
             href="/dashboard/new"
             className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover"
