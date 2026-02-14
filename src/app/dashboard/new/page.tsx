@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getFileExtension } from "@/lib/media";
 import { EntryType } from "@/lib/types";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import TextEntryForm from "@/components/TextEntryForm";
@@ -34,24 +35,6 @@ export default function NewEntryPage() {
   const audioBlobRef = useRef<{ blob: Blob; mimeType: string } | null>(null);
   const mediaFileRef = useRef<File | null>(null);
   const cameraBlobRef = useRef<{ blob: Blob; mimeType: string } | null>(null);
-
-  const getFileExtension = (mimeType: string): string => {
-    // Strip codec parameters (e.g. "video/webm;codecs=vp9,opus" -> "video/webm")
-    const baseMime = mimeType.split(";")[0].trim();
-    const map: Record<string, string> = {
-      "audio/webm": "webm",
-      "audio/ogg": "ogg",
-      "audio/mp4": "m4a",
-      "image/jpeg": "jpg",
-      "image/png": "png",
-      "image/gif": "gif",
-      "image/webp": "webp",
-      "video/mp4": "mp4",
-      "video/webm": "webm",
-      "video/quicktime": "mov",
-    };
-    return map[baseMime] || baseMime.split("/")[1] || "bin";
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,24 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { getSupportedMimeType } from "@/lib/media";
 
 interface AudioRecorderProps {
   onRecorded: (blob: Blob, mimeType: string) => void;
-}
-
-function getSupportedMimeType(): string {
-  const types = [
-    "audio/webm;codecs=opus",
-    "audio/webm",
-    "audio/ogg;codecs=opus",
-    "audio/mp4",
-  ];
-  for (const type of types) {
-    if (MediaRecorder.isTypeSupported(type)) {
-      return type;
-    }
-  }
-  return "audio/webm";
 }
 
 export default function AudioRecorder({ onRecorded }: AudioRecorderProps) {

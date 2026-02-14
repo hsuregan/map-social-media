@@ -164,6 +164,23 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Testing
+
+The project uses [Vitest](https://vitest.dev) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for unit and component tests.
+
+```bash
+# Run tests in watch mode
+npm test
+
+# Run tests once (CI-friendly)
+npm run test:run
+
+# Run tests with verbose output
+npx vitest run --reporter=verbose
+```
+
+Tests are located in `src/__tests__/` and cover utility functions, hooks, components, API routes, and middleware.
+
 ## Pages
 
 | Route | Description |

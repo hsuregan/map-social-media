@@ -8,6 +8,7 @@ import "leaflet/dist/leaflet.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import { JournalEntry } from "@/lib/types";
+import { pointInPolygon } from "@/lib/geo";
 import Link from "next/link";
 
 // Inline SVG marker icons to eliminate external CDN requests
@@ -61,25 +62,6 @@ function FitBounds({ entries }: { entries: JournalEntry[] }) {
   }, [entries, map]);
 
   return null;
-}
-
-// Ray-casting algorithm: returns true if point (lat, lng) is inside polygon
-function pointInPolygon(
-  lat: number,
-  lng: number,
-  polygon: L.LatLng[]
-): boolean {
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const yi = polygon[i].lat,
-      xi = polygon[i].lng;
-    const yj = polygon[j].lat,
-      xj = polygon[j].lng;
-    const intersect =
-      yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
-    if (intersect) inside = !inside;
-  }
-  return inside;
 }
 
 function DrawLassoSelector({
