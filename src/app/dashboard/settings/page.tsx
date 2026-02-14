@@ -83,7 +83,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Settings</h1>
         <p className="text-stone-500">Loading...</p>
       </div>
@@ -91,7 +91,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Settings</h1>
 
       <div className="rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">

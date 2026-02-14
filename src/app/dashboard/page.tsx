@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div>
+    <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-ink">My Journal</h1>
       </div>

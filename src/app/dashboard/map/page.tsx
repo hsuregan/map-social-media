@@ -51,15 +51,15 @@ export default async function MapPage({
   const popupEntryId = popup ?? null;
 
   return (
-    <div>
-      <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Entry Map</h1>
-
+    <div className="flex h-[calc(100dvh-49px)] flex-col">
       {geoEntries.length === 0 ? (
-        <div className="rounded-xl border border-linen bg-ivory p-8 text-center">
-          <p className="text-stone-500">
-            No geotagged entries yet. Create a new entry and allow location
-            access to see it on the map.
-          </p>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="rounded-xl border border-linen bg-ivory p-8 text-center">
+            <p className="text-stone-500">
+              No geotagged entries yet. Create a new entry and allow location
+              access to see it on the map.
+            </p>
+          </div>
         </div>
       ) : (
         <EntryMapWrapper

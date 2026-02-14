@@ -8,7 +8,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-cream">
       <Navbar />
-      <main className="mx-auto max-w-4xl px-6 py-10">{children}</main>
+      <main>{children}</main>
     </div>
   );
 }

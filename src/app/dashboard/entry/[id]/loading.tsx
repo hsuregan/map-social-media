@@ -1,6 +1,6 @@
 export default function EntryLoading() {
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl px-6 py-10">
       <div className="mb-6 h-4 w-32 animate-warm-pulse rounded bg-linen" />
       <div className="rounded-xl border border-linen bg-ivory p-6 shadow-[var(--shadow-warm-sm)]">
         <div className="h-7 w-2/3 animate-warm-pulse rounded bg-linen" />

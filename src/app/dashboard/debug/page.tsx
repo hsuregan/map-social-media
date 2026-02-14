@@ -62,7 +62,7 @@ export default function DebugPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Debug</h1>
         <p className="text-stone-500">Loading...</p>
       </div>
@@ -70,7 +70,7 @@ export default function DebugPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight text-ink">Debug</h1>
 
       {error && (

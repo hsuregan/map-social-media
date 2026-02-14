@@ -59,7 +59,7 @@ export default async function EntryDetailPage({
   });
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl px-6 py-10">
       <div className="mb-6">
         {from === "map" ? (
           <Link

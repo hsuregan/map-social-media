@@ -6,7 +6,7 @@ import { JournalEntry } from "@/lib/types";
 const EntryMap = dynamic(() => import("@/components/EntryMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[600px] w-full items-center justify-center rounded-xl bg-linen text-stone-500">
+    <div className="flex h-full w-full flex-1 items-center justify-center bg-linen text-stone-500">
       Loading map...
     </div>
   ),

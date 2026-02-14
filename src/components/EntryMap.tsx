@@ -694,11 +694,11 @@ export default function EntryMap({ entries, currentUserId, mediaUrls, popupEntry
   }, []);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column" }}>
       <MapContainer
         center={[0, 0]}
         zoom={2}
-        className="h-[600px] w-full rounded-xl"
+        className="h-full w-full flex-1"
         ref={mapRef}
       >
         <TileLayer
